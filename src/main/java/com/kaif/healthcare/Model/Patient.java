@@ -1,4 +1,4 @@
-package com.kaif.healthcare;
+package com.kaif.healthcare.Model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,5 +20,10 @@ public class Patient {
 
     private String name;
     private int age;
+
+    public Patient(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
 
 }

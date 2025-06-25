@@ -5,26 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Entity
-public class Patient {
+public class MedicalRecord {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name= "medicalRecord")
-    private MedicalRecord medicalRecord;
+    @OneToOne(mappedBy= "medicalRecord")
+    private Patient patient;
 
-    private String name;
-    private int age;
-
-    public Patient(String name, int age) {
-        this.name = name;
-        this.age = age;
+    public MedicalRecord(String diagnose) {
+        this.diagnose = diagnose;
     }
 
+    private String diagnose;
 }

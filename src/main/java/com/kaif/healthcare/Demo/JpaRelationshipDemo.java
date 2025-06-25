@@ -1,11 +1,7 @@
 package com.kaif.healthcare.Demo;
 
-import com.kaif.healthcare.Model.Doctor;
-import com.kaif.healthcare.Model.MedicalRecord;
-import com.kaif.healthcare.Model.Patient;
-import com.kaif.healthcare.Repositories.DoctorRepo;
-import com.kaif.healthcare.Repositories.MedicalRecordRepo;
-import com.kaif.healthcare.Repositories.PatientRepo;
+import com.kaif.healthcare.Model.*;
+import com.kaif.healthcare.Repositories.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -23,6 +19,12 @@ public class JpaRelationshipDemo implements CommandLineRunner {
     @Autowired
     private DoctorRepo dr;
 
+    @Autowired
+    private MedicineRepo mr;
+
+    @Autowired
+    private PrescriptionRepo prescriptionRepe;
+
     @Override
     @Transactional
     public void run(String... args) throws Exception{
@@ -38,10 +40,12 @@ public class JpaRelationshipDemo implements CommandLineRunner {
         p1.setDoctor(d1);
         //for doctor entity
         d1.getPatients().add(p1);
+        //for MedicalRecord entity
+        p1MedicalRecord.setPatient(p1);
 
         //Saving, first save non-owning side in the DB
-        mrr.save(p1MedicalRecord);
-        dr.save(d1);
+//        mrr.save(p1MedicalRecord);
+//        dr.save(d1);
         pr.save(p1);
 
         //Finding medical record of the patient
@@ -55,6 +59,32 @@ public class JpaRelationshipDemo implements CommandLineRunner {
         System.out.println(pFromDB.getDoctor().getDoctorName());
 
         System.out.println(d1.getPatients().get(0).getName());
+
+        //Remove
+//        pr.deleteById(p1.getId());
+
+
+        //Medicine and Prescription
+        Medicine paracetamol= new Medicine("Paracetamol");
+        Prescription p1Prescription= new Prescription("Prescription 1");
+
+        //Bi-directional mapping
+        //for Medicine entity
+        paracetamol.getPrescription().add(p1Prescription);
+        //for Prescription entity
+        p1Prescription.getMedicine().add(paracetamol);
+
+        //Save
+        mr.save(paracetamol);
+
+        //Get
+        Medicine medicineFromRepo= mr.findById(paracetamol.getId()).
+                orElseThrow(() -> new Exception("Medicine Not Found"));
+        System.out.println(medicineFromRepo.getPrescription().get(0).getPrescription());
+
+        Prescription prescriptionFromRepo= prescriptionRepe.findById(p1Prescription.getId()).
+                orElseThrow(() -> new Exception("Medicine Not Found"));
+        System.out.println(prescriptionFromRepo.getMedicine().get(0).getMedicine());
 
     }
 

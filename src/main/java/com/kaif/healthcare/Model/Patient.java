@@ -15,11 +15,11 @@ public class Patient {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
     @JoinColumn(name= "medical_record_id")
     private MedicalRecord medicalRecord;
 
-    @ManyToOne(cascade= CascadeType.PERSIST)
+    @ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
     @JoinColumn(name= "doctor_id")
     private Doctor doctor;
 

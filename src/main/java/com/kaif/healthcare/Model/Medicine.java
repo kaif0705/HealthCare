@@ -23,12 +23,7 @@ public class Medicine {
         this.medicine= medicine;
     }
 
-    @ManyToMany(cascade= CascadeType.PERSIST)
-    @JoinTable(
-            name= "medicine_prescription",
-            joinColumns= @JoinColumn(name= "medicine_id"),
-            inverseJoinColumns= @JoinColumn(name= "prescription_id")
-    )
+    @ManyToMany(mappedBy= "medicine")
     private List<Prescription> prescription= new ArrayList<>();
 
     private String medicine;

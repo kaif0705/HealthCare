@@ -12,18 +12,39 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+//@IdClass(PrescriptionId.class) --> requires strict matching of Id
 public class Prescription {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId // <--- Use @EmbeddedId to embed the composite key class
+    private PrescriptionId id;
+
+//    @Id
+//    @GeneratedValue(strategy= GenerationType.IDENTITY)
+//    private Long id;
     private String prescription;
+
+    @MapsId("doctorId")
+    @ManyToOne(fetch= FetchType.LAZY, optional= false)
+    @JoinColumn(name= "doctor_id")
+    private Doctor doctor;
+
+    @MapsId("patientId")
+    @ManyToOne(fetch= FetchType.LAZY, optional= false)
+    @JoinColumn(name= "patient_id")
+    private Patient patient;
 
     public Prescription(String prescription){
         this.prescription= prescription;
     }
 
-    @ManyToMany(mappedBy= "prescription")
+    @ManyToMany
+    @JoinTable(
+            joinColumns= {
+                    @JoinColumn(name= "prescription_doctor_id", referencedColumnName = "doctor_id"),
+                    @JoinColumn(name= "presrciption_patient_id", referencedColumnName= "patient_id")
+            },
+            inverseJoinColumns= @JoinColumn(name= "medicine_id")
+    )
     private List<Medicine> medicine= new ArrayList<>();
 
 

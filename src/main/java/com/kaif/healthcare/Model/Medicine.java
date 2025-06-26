@@ -23,7 +23,7 @@ public class Medicine {
         this.medicine= medicine;
     }
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade= CascadeType.PERSIST)
     @JoinTable(
             name= "medicine_prescription",
             joinColumns= @JoinColumn(name= "medicine_id"),

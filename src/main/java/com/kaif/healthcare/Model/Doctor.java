@@ -17,14 +17,17 @@ public class Doctor {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
-
-    @OneToMany(mappedBy= "doctor")
-    private List <Patient> patients= new ArrayList<>();
-
     private String doctorName;
+
+    @Embedded
+    private Address doctorAddress;
 
     public Doctor(String doctorName){
         this.doctorName = doctorName;
+        doctorAddress= new Address();
     }
+
+    @OneToMany(mappedBy= "doctor")
+    private List <Patient> patients= new ArrayList<>();
 
 }

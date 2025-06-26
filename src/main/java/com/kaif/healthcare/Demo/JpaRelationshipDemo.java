@@ -46,19 +46,18 @@ public class JpaRelationshipDemo implements CommandLineRunner {
         //Saving, first save non-owning side in the DB
 //        mrr.save(p1MedicalRecord);
 //        dr.save(d1);
-        pr.save(p1);
 
         //Finding medical record of the patient
-        MedicalRecord aliceFromRepo= mrr.findById(p1MedicalRecord.getId()).
-                orElseThrow(() -> new Exception("P1 Not Found"));
-        System.out.println(aliceFromRepo.getPatient().getName());
+//        MedicalRecord aliceFromRepo= mrr.findById(p1MedicalRecord.getId()).
+//                orElseThrow(() -> new Exception("P1 Not Found"));
+//        System.out.println(aliceFromRepo.getPatient().getName());
 
         //Fetching patient from DB
-        Patient pFromDB= pr.findById(p1.getId()).
-                orElseThrow(() -> new Exception("P1 Not Found"));
-        System.out.println(pFromDB.getDoctor().getDoctorName());
+//        Patient pFromDB= pr.findById(p1.getId()).
+//                orElseThrow(() -> new Exception("P1 Not Found"));
+//        System.out.println(pFromDB.getDoctor().getDoctorName());
 
-        System.out.println(d1.getPatients().get(0).getName());
+//        System.out.println(d1.getPatients().get(0).getName());
 
         //Remove
 //        pr.deleteById(p1.getId());
@@ -78,13 +77,31 @@ public class JpaRelationshipDemo implements CommandLineRunner {
         mr.save(paracetamol);
 
         //Get
-        Medicine medicineFromRepo= mr.findById(paracetamol.getId()).
-                orElseThrow(() -> new Exception("Medicine Not Found"));
-        System.out.println(medicineFromRepo.getPrescription().get(0).getPrescription());
+//        Medicine medicineFromRepo= mr.findById(paracetamol.getId()).
+//                orElseThrow(() -> new Exception("Medicine Not Found"));
+//        System.out.println(medicineFromRepo.getPrescription().get(0).getPrescription());
+//
+//        Prescription prescriptionFromRepo= prescriptionRepe.findById(p1Prescription.getId()).
+//                orElseThrow(() -> new Exception("Medicine Not Found"));
+//        System.out.println(prescriptionFromRepo.getMedicine().get(0).getMedicine());
 
-        Prescription prescriptionFromRepo= prescriptionRepe.findById(p1Prescription.getId()).
-                orElseThrow(() -> new Exception("Medicine Not Found"));
-        System.out.println(prescriptionFromRepo.getMedicine().get(0).getMedicine());
+        //@Embeddable and @Embedded
+        //Instantiating address for patient
+        Address patientAddress= p1.getPatientAddress();
+        patientAddress.setStreet("Street 1");
+        patientAddress.setCity("City 1");
+        patientAddress.setState("State 1");
+        patientAddress.setZipcode("Zipcode 1");
+
+        //Instantiating address for doctor
+        Address doctorAddress= d1.getDoctorAddress();
+        doctorAddress.setStreet("Street 2");
+        doctorAddress.setCity("City 2");
+        doctorAddress.setState("State 2");
+        doctorAddress.setZipcode("Zipcode 2");
+
+        //Saving Address
+        pr.save(p1);
 
     }
 

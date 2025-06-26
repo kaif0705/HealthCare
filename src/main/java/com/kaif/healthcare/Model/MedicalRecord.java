@@ -15,7 +15,7 @@ public class MedicalRecord {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy= "medicalRecord")
+    @OneToOne(mappedBy= "medicalRecord", fetch = FetchType.LAZY)
     private Patient patient;
 
     public MedicalRecord(String diagnose) {

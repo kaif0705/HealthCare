@@ -23,7 +23,7 @@ public class Medicine {
         this.medicine= medicine;
     }
 
-    @ManyToMany(mappedBy= "medicine")
+    @ManyToMany(mappedBy= "medicines")
     private List<Prescription> prescription= new ArrayList<>();
 
     private String medicine;

@@ -7,23 +7,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class JpaRelationshipDemo implements CommandLineRunner {
 
-    @Autowired
-    private PatientRepo pr;
-
-    @Autowired
-    private MedicalRecordRepo mrr;
-
-    @Autowired
-    private DoctorRepo dr;
-
-    @Autowired
-    private MedicineRepo mr;
-
-    @Autowired
-    private PrescriptionRepo prescriptionRepe;
+//    @Autowired
+//    private PatientRepo pr;
+//
+//    @Autowired
+//    private MedicalRecordRepo mrr;
+//
+//    @Autowired
+//    private DoctorRepo dr;
+//
+//    @Autowired
+//    private MedicineRepo mr;
+//
+//    @Autowired
+//    private PrescriptionRepo prescriptionRepe;
 
     @Override
     @Transactional
@@ -71,10 +71,10 @@ public class JpaRelationshipDemo implements CommandLineRunner {
         //for Medicine entity
         paracetamol.getPrescription().add(p1Prescription);
         //for Prescription entity
-        p1Prescription.getMedicine().add(paracetamol);
+//        p1Prescription.getMedicine().add(paracetamol);
 
         //Save
-        mr.save(paracetamol);
+//        mr.save(paracetamol);
 
         //Get
 //        Medicine medicineFromRepo= mr.findById(paracetamol.getId()).
@@ -101,7 +101,7 @@ public class JpaRelationshipDemo implements CommandLineRunner {
         doctorAddress.setZipcode("Zipcode 2");
 
         //Saving Address
-        pr.save(p1);
+//        pr.save(p1);
 
     }
 

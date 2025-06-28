@@ -16,13 +16,13 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Entity
-public class Patient {
+public class Patient extends Person {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private int age;
+//    @Id
+//    @GeneratedValue(strategy= GenerationType.IDENTITY)
+//    private Long id;
+//    private String name;
+//    private int age;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -40,8 +40,8 @@ public class Patient {
     private Address patientAddress;
 
     public Patient(String name, int age) {
-        this.name = name;
-        this.age = age;
+//        this.name = name;
+//        this.age = age;
         //Empty address instance to get it through patient instance while setting the address
         patientAddress = new Address();
         this.ageGroup = calculateAgeGroup(age);

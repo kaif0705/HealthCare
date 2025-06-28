@@ -10,33 +10,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-@Component
-public class FetchTypeDemo implements CommandLineRunner {
-
-    @Autowired
-    private PatientRepo patientRepo;
-
-    @Autowired
-    private DoctorRepo doctorRepo;
-
-    @Autowired
-    private MedicalRecordRepo medicalRecordRepo;
-
-    public void run(String... args) throws Exception{
-
-        MedicalRecord aliceMedicalRecord= new MedicalRecord("Fever");
-        Doctor aliceDoctor= new Doctor("Smith");
-        Patient alice= new Patient("Alice", 20);
-
-        alice.setMedicalRecord(aliceMedicalRecord);
-        alice.setDoctor(aliceDoctor);
-
-        patientRepo.save(alice);
-
-        Patient aliceFromDB= patientRepo.findById(alice.getId()).
-                orElseThrow( () -> new Exception("Patient not found"));
-
-
-    }
-
-}
+//@Component
+//public class FetchTypeDemo implements CommandLineRunner {
+//
+//    @Autowired
+//    private PatientRepo patientRepo;
+//
+//    @Autowired
+//    private DoctorRepo doctorRepo;
+//
+//    @Autowired
+//    private MedicalRecordRepo medicalRecordRepo;
+//
+//    public void run(String... args) throws Exception{
+//
+//        MedicalRecord aliceMedicalRecord= new MedicalRecord("Fever");
+//        Doctor aliceDoctor= new Doctor("Smith");
+//        Patient alice= new Patient("Alice", 20);
+//
+//        alice.setMedicalRecord(aliceMedicalRecord);
+//        alice.setDoctor(aliceDoctor);
+//
+//        patientRepo.save(alice);
+//
+//        Patient aliceFromDB= patientRepo.findById(alice.getId()).
+//                orElseThrow( () -> new Exception("Patient not found"));
+//
+//
+//    }
+//
+//}

@@ -12,19 +12,21 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Doctor {
+public class Doctor extends Person {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
-    private String doctorName;
+//    @Id
+//    @GeneratedValue(strategy= GenerationType.IDENTITY)
+//    private Long id;
+//    private String doctorName;
 
     @Embedded
     private Address doctorAddress;
 
+    private String speciality;
+
     public Doctor(String doctorName){
-        this.doctorName = doctorName;
-        doctorAddress= new Address();
+//        this.doctorName = doctorName;
+//        doctorAddress= new Address();
     }
 
     @OneToMany(mappedBy= "doctor")

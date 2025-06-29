@@ -1,6 +1,10 @@
 package com.kaif.healthcare.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,8 +24,11 @@ public class Doctor extends Person {
 //    private String doctorName;
 
     @Embedded
+    @Valid
     private Address doctorAddress;
 
+    @NotBlank(message= "Doctors Speciality cannot be blank")
+    @Size(max = 10, message = "Speciality cannot exceed 10 characters")
     private String speciality;
 
     public Doctor(String doctorName){
@@ -30,6 +37,7 @@ public class Doctor extends Person {
     }
 
     @OneToMany(mappedBy= "doctor")
+    @JsonIgnore
     private List <Patient> patients= new ArrayList<>();
 
 }

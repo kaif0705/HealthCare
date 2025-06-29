@@ -1,6 +1,8 @@
 package com.kaif.healthcare.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +24,9 @@ public class Prescription {
 //    @Id
 //    @GeneratedValue(strategy= GenerationType.IDENTITY)
 //    private Long id;
+
+    @NotBlank
+    @Size(min= 4)
     private String prescription;
 
     @MapsId("doctorId") //Acts as an bridge, tells JPA that PrescriptionId entities doctorId field gets it P.K from Doctor class

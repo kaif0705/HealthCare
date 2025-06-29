@@ -1,5 +1,6 @@
 package com.kaif.healthcare.Payloads;
 
+import com.kaif.healthcare.Emuns.Gender;
 import com.kaif.healthcare.Model.Address;
 import com.kaif.healthcare.Model.Doctor;
 import com.kaif.healthcare.Model.MedicalRecord;
@@ -17,9 +18,10 @@ import java.util.List;
 public class PatientDTO {
 
     private String name;
-    private String gender;
+    private Gender gender;
+    private String email;
     private int age;
-    private Address address;
+    private Address patientAddress;
     private List<Prescription> prescription= new ArrayList<>();
     private MedicalRecord medicalRecord;
     private Doctor doctor;

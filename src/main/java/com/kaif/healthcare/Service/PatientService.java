@@ -5,10 +5,12 @@ import com.kaif.healthcare.Payloads.PatientDTO;
 
 import java.util.List;
 
-//public interface PatientService {
-//    List<PatientDTO> getAllPatients();
-//    PatientDTO getPatientById(Long patientId);
-//
-//    //Create
-//    PatientDTO addPatient(PatientDTO patientDTO);
-//}
+public interface PatientService {
+    List<PatientDTO> getAllPatients();
+    PatientDTO getPatientById(Long patientId);
+
+    //Create
+    PatientDTO addPatient(PatientDTO patientDTO);
+    String deletePatient(Long patientId);
+    String updatePatient(Long patientId, PatientDTO patientDTO);
+}

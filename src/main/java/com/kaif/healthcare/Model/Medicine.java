@@ -1,6 +1,8 @@
 package com.kaif.healthcare.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +19,8 @@ public class Medicine {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
-
+    @NotBlank
+    private String medicine;
 
     public Medicine(String medicine){
         this.medicine= medicine;
@@ -26,6 +29,5 @@ public class Medicine {
     @ManyToMany(mappedBy= "medicines")
     private List<Prescription> prescription= new ArrayList<>();
 
-    private String medicine;
 
 }

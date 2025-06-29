@@ -10,16 +10,8 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class HealthcareApplication {
 
-//    @Autowired
-//    private ModelMapper modelMapper;
-
     public static void main(String[] args) {
         SpringApplication.run(HealthcareApplication.class, args);
     }
-
-//    @Bean
-//    public ModelMapper modelMapper(){
-//        return modelMapper;
-//    }
 
 }

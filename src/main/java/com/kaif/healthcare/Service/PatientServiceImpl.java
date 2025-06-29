@@ -55,9 +55,15 @@ public class PatientServiceImpl implements PatientService {
 
 
     /* Create Patient */
-    public PatientDTO addPatient(PatientDTO patientDTO){
+    @Transactional
+    public PatientDTO addPatient(PatientDTO patientDTO, Long doctorId){
 
         Patient patient= modelMapper.map(patientDTO, Patient.class);
+
+        //Check if Patient Already exists
+        if(patientRepo.findByEmail(patientDTO.getEmail()).isPresent()){
+            throw new APIException("Patient With Email Already Exists");
+        }
 
         //Setting Patients Gender
         if(patientDTO.getGender().equals(Gender.MALE)){
@@ -91,6 +97,11 @@ public class PatientServiceImpl implements PatientService {
             }
         }
 
+        //Setting Patient with doctor
+        Doctor setPatientDoctor= doctorRepo.findById(doctorId).
+                orElseThrow(() -> new ResourceNotFoundException("Doctor Not Found with ID: " + doctorId));
+        patient.setDoctor(setPatientDoctor);
+
         //Saving Patient
         patientRepo.save(patient);
 
@@ -119,7 +130,5 @@ public class PatientServiceImpl implements PatientService {
         return "Patient Updated with Id: " + patientId;
 
     }
-
-
 
 }

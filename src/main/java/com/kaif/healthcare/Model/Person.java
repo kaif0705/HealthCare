@@ -21,7 +21,7 @@ public class Person {
     private Long id;
 
     @NotBlank
-    @Size(min= 4, max= 10)
+    @Size(max= 30)
     private String name;
 
     @NotNull
@@ -34,6 +34,7 @@ public class Person {
     private Gender gender;
 
     @Size(max= 100)
+    @Email
     private String email;
 
 }

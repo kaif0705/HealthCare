@@ -2,8 +2,9 @@ package com.kaif.healthcare.Payloads;
 
 import com.kaif.healthcare.Emuns.Gender;
 import com.kaif.healthcare.Model.Address;
-import com.kaif.healthcare.Model.MedicalRecord;
-import com.kaif.healthcare.Model.Prescription;
+import com.kaif.healthcare.Model.Patient;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,15 +15,18 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatientDTO {
+public class DoctorDTO {
 
+    private Long id;
     private String name;
-    private Gender gender;
-    private String email;
     private int age;
-    private Address patientAddress;
-    private List<Prescription> prescription= new ArrayList<>();
-    private MedicalRecord medicalRecord;
-    private DoctorDTO doctor;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    private String email;
+    private Address doctorAddress;
+    private String speciality;
+    private List<PatientDTO> patients= new ArrayList<>();
 
 }

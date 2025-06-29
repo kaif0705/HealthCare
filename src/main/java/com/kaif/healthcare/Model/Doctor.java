@@ -8,7 +8,10 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +26,18 @@ public class Doctor extends Person {
 //    private Long id;
 //    private String doctorName;
 
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
     @Embedded
     @Valid
     private Address doctorAddress;
 
     @NotBlank(message= "Doctors Speciality cannot be blank")
-    @Size(max = 10, message = "Speciality cannot exceed 10 characters")
+    @Size(max = 20, message = "Speciality cannot exceed 20 characters")
     private String speciality;
 
     public Doctor(String doctorName){

@@ -35,17 +35,9 @@ public class Prescription {
     private Doctor doctorId;
 
     @MapsId("patientId") //tells JPA that PrescriptionId entities patientId field gets it P.K from Patient class
-    @ManyToOne(fetch= FetchType.LAZY, optional= false)
+    @ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, fetch= FetchType.LAZY, optional= false)
     @JoinColumn(name= "patient_id")
     private Patient patientId;
-
-    public Prescription(String prescription){
-        this.prescription= prescription;
-    }
-
-    @ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, fetch= FetchType.LAZY)
-    @JoinColumn(name= "patient")
-    private Patient patient;
 
     @ManyToMany
     @JoinTable(

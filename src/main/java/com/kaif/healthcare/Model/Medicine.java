@@ -1,5 +1,6 @@
 package com.kaif.healthcare.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -26,7 +27,8 @@ public class Medicine {
         this.medicine= medicine;
     }
 
-    @ManyToMany(mappedBy= "medicines")
+    @ManyToMany(mappedBy= "medicines", cascade= {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonIgnore
     private List<Prescription> prescription= new ArrayList<>();
 
 

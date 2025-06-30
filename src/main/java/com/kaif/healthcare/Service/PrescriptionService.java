@@ -11,4 +11,5 @@ public interface PrescriptionService {
     List<PrescriptionDTO> getAllPrescriptions();
     PrescriptionDTO getPrescriptionById(PrescriptionId prescriptionId);
     String deletePrescriptionById(@Valid PrescriptionId prescriptionId);
+    PrescriptionDTO updatePrescription(PrescriptionDTO prescriptionDTO);
 }

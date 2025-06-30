@@ -1,8 +1,5 @@
 package com.kaif.healthcare.Payloads;
 
-import com.kaif.healthcare.Model.Prescription;
-import jakarta.persistence.ManyToMany;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

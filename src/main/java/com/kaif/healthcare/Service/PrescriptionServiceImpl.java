@@ -128,7 +128,29 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         }else{
             prescriptionRepo.deleteById(prescriptionId);
         }
-        return "Prescription deleted";
+        return "Prescription deleted with patientId: " + prescriptionId.getPatientId();
+    }
+
+    @Override
+    @Transactional
+    public PrescriptionDTO updatePrescription(PrescriptionDTO prescriptionDTO) {
+
+        //Check if prescription exits with ID
+        PrescriptionId prescriptionId= new PrescriptionId(prescriptionDTO.getDoctorId(), prescriptionDTO.getPatientId());
+        Prescription prescriptionFromDB= prescriptionRepo.findById(prescriptionId).
+                orElseThrow( () -> new ResourceNotFoundException("PrescriptionId not found"));
+
+        prescriptionFromDB.setPrescription(prescriptionDTO.getPrescription());
+
+        prescriptionFromDB.getMedicines().clear();
+        for(MedicineDTO obj : prescriptionDTO.getMedicinesDTO()){
+            Medicine medicine= modelMapper.map(obj, Medicine.class);
+            prescriptionFromDB.getMedicines().add(medicine);
+        }
+
+        Prescription udatedPrescription= prescriptionRepo.save(prescriptionFromDB);
+
+        return modelMapper.map(udatedPrescription, PrescriptionDTO.class);
     }
 
 }

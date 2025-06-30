@@ -38,10 +38,18 @@ public class PrescriptionController {
         return ResponseEntity.ok(prescriptionDTO);
     }
 
+    /* Delete Prescription */
     @DeleteMapping("/public/prescriptions")
     public ResponseEntity<String> deletePrescriptionById(@RequestBody PrescriptionId prescriptionId) {
         String delete= prescriptionService.deletePrescriptionById(prescriptionId);
         return ResponseEntity.ok(delete);
+    }
+
+    /* Update Prescription */
+    @PutMapping("/public/prescriptions")
+    public ResponseEntity<PrescriptionDTO> updatePrescription(@RequestBody PrescriptionDTO prescriptionDTO) {
+        PrescriptionDTO update= prescriptionService.updatePrescription(prescriptionDTO);
+        return ResponseEntity.ok(update);
     }
 
 }

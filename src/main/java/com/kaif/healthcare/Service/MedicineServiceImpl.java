@@ -40,4 +40,21 @@ public class MedicineServiceImpl implements MedicineService {
         return modelMapper.map(medicine, MedicineDTO.class);
 
     }
+
+    @Override
+    @Transactional
+    public List<MedicineDTO> getAllMedicines() {
+        List<Medicine> medicines= medicineRepo.findAll();
+
+        if(medicines.isEmpty()){
+            throw new APIException("No medicines found");
+        }
+
+        List<MedicineDTO> medicineDTOs= new ArrayList<>();
+        for(Medicine medicine: medicines){
+            medicineDTOs.add(modelMapper.map(medicine, MedicineDTO.class));
+        }
+
+        return medicineDTOs;
+    }
 }

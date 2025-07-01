@@ -1,5 +1,6 @@
 package com.kaif.healthcare.Payloads;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kaif.healthcare.Emuns.Gender;
 import com.kaif.healthcare.Model.Address;
@@ -22,6 +23,8 @@ public class PatientDTO {
     private String email;
     private int age;
     private Address patientAddress;
+
+    @JsonIgnore
     private List<PrescriptionDTO> prescriptionDTO= new ArrayList<>();
 
     private MedicalRecord medicalRecord;

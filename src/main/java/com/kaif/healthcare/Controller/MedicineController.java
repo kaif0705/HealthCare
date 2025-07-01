@@ -31,4 +31,25 @@ public class MedicineController {
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
+    /* Get Medicine By ID*/
+    @GetMapping("/public/medicines/{medicineId}")
+    public ResponseEntity<MedicineDTO> getMedicineById(@PathVariable Long medicineId) {
+        MedicineDTO medicine= medicineService.getMedicine(medicineId);
+        return new ResponseEntity<>(medicine, HttpStatus.OK);
+    }
+
+    /* Update Medicine */
+    @PutMapping("/public/medicines")
+    public ResponseEntity<MedicineDTO> updateMedicine(@Valid @RequestBody MedicineDTO medicineDTO) {
+        MedicineDTO updated= medicineService.updateMedicine(medicineDTO);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
+    }
+
+    /* Delete Medicine */
+    @DeleteMapping("/public/medicines/{medicineId}")
+    public ResponseEntity<String> deleteMedicine(@PathVariable Long medicineId) {
+        String delete= medicineService.deleteMedicine(medicineId);
+        return new ResponseEntity<>(delete, HttpStatus.OK);
+    }
+
 }

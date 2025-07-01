@@ -1,5 +1,6 @@
 package com.kaif.healthcare.Payloads;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,8 @@ public class MedicineDTO {
 
     private Long id;
     private String medicine;
+
+    @JsonIgnore
     private List<PrescriptionDTO> prescriptionDTO= new ArrayList<>();
 
 }

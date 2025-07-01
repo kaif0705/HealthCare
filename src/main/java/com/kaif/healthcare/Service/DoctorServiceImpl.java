@@ -65,22 +65,7 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorDTO> dtos = new ArrayList<>();
         for(Doctor doctor : doctors){
             DoctorDTO doctorDto= modelMapper.map(doctor, DoctorDTO.class);
-
-            //Map each Patient obj in Doctor
-            List<PatientDTO> patientDTOs= doctor.getPatients().stream().
-                    map( patient ->{
-                            PatientDTO patientDTO= new PatientDTO();
-                            patientDTO.setName(patient.getName());
-                            patientDTO.setAge(patient.getAge());
-                            patientDTO.setGender(patient.getGender());
-                            doctor.getPatients().add(patient);
-                            return patientDTO;
-                        }
-                    ).toList();
-
-            doctorDto.setPatients(patientDTOs);
             dtos.add(doctorDto);
-
         }
         return dtos;
     }

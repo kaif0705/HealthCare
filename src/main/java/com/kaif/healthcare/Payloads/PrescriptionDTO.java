@@ -1,7 +1,5 @@
 package com.kaif.healthcare.Payloads;
 
-import com.kaif.healthcare.Model.Medicine;
-import com.kaif.healthcare.Model.Patient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

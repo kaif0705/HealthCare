@@ -29,6 +29,10 @@ public class MedicineServiceImpl implements MedicineService {
 
         Medicine medicine= modelMapper.map(medicineDTO, Medicine.class);
 
+        if(medicineDTO==null){
+            throw new APIException("Medicine cannot be null");
+        }
+
         if(medicineRepo.findByName(medicineDTO.getMedicine()) != null){
             throw new APIException("Medicine already exists with Name: " + medicineDTO.getMedicine() );
         }
@@ -56,5 +60,74 @@ public class MedicineServiceImpl implements MedicineService {
         }
 
         return medicineDTOs;
+    }
+
+    @Override
+    @Transactional
+    public MedicineDTO getMedicine(Long medicineId) {
+
+        //If MedicineId is null
+        if(medicineId == null){
+            throw new APIException("Medicine id cannot be null");
+        }
+
+        //If medicine does not exist
+        Medicine medicine= medicineRepo.findById(medicineId).orElse(null);
+        if(medicine!=null){
+            //Return MedicineDTO
+            MedicineDTO medicineDTO= new MedicineDTO();
+            medicineDTO.setId(medicineId);
+            medicineDTO.setMedicine(medicine.getMedicine());
+
+            return medicineDTO;
+        }else{
+            throw new APIException("Medicine not found with ID: " + medicineId);
+        }
+    }
+
+    @Override
+    @Transactional
+    public String deleteMedicine(Long medicineId){
+
+        //Check if ID is Null
+        if(medicineId == null){
+            throw new APIException("Medicine id cannot be null");
+        }
+
+        //Check if Medicine exits in DB
+        Medicine medicine= medicineRepo.findById(medicineId).orElse(null);
+        if(medicine!=null){
+            medicineRepo.delete(medicine);
+        }else{
+            throw new APIException("Medicine not found with ID: " + medicineId);
+        }
+
+        return "Medicine deleted with ID: " + medicineId;
+
+    }
+
+    @Override
+    @Transactional
+    public MedicineDTO updateMedicine(MedicineDTO medicineDTO){
+
+        //Check if ID is Null
+        if(medicineDTO==null){
+            throw new APIException("Medicine cannot be null");
+        }
+
+        //Check if Medicine exits in DB
+        Medicine medicine= medicineRepo.findById(medicineDTO.getId()).orElse(null);
+        if(medicine==null){
+            throw new APIException("Medicine not found with ID: " + medicineDTO.getId());
+        }
+
+        if(medicineRepo.findByName(medicineDTO.getMedicine()) != null){
+            throw new APIException("Medicine already exists with Name: " + medicineDTO.getMedicine() );
+        }
+
+        medicine.setMedicine(medicineDTO.getMedicine());
+        medicineRepo.save(medicine);
+
+        return modelMapper.map(medicine, MedicineDTO.class);
     }
 }

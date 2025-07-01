@@ -7,6 +7,7 @@ import com.kaif.healthcare.Model.Doctor;
 import com.kaif.healthcare.Model.Patient;
 import com.kaif.healthcare.Model.Prescription;
 import com.kaif.healthcare.Payloads.PatientDTO;
+import com.kaif.healthcare.Payloads.PrescriptionDTO;
 import com.kaif.healthcare.Repositories.DoctorRepo;
 import com.kaif.healthcare.Repositories.PatientRepo;
 import jakarta.transaction.Transactional;
@@ -61,10 +62,9 @@ public class PatientServiceImpl implements PatientService {
         Patient patient= modelMapper.map(patientDTO, Patient.class);
 
         //Check if Patient Already exists
-        if(patientRepo.findByEmail(patientDTO.getEmail()).isPresent()){
-            throw new APIException("Patient With Email Already Exists");
-        }
-
+//        if(patientRepo.findByEmail(patientDTO.getEmail().toString()).isPresent()){
+//            throw new APIException("Patient With Email Already Exists");
+//        }
         //Setting Patients Gender
         if(patientDTO.getGender().equals(Gender.MALE)){
             patient.setGender(Gender.MALE);
@@ -89,9 +89,9 @@ public class PatientServiceImpl implements PatientService {
 
         //Setting Prescription
         //Changes needed
-        if(patientDTO.getPrescription() != null && !patientDTO.getPrescription().isEmpty()){
-            List<Prescription> patientPrescription= patientDTO.getPrescription();
-            for(Prescription obj : patientPrescription){
+        if(patientDTO.getPrescriptionDTO() != null && !patientDTO.getPrescriptionDTO().isEmpty()){
+            List<PrescriptionDTO> patientPrescription= patientDTO.getPrescriptionDTO();
+            for(PrescriptionDTO obj : patientPrescription){
                 Prescription prescription= modelMapper.map(obj, Prescription.class);
                 patient.getPrescription().add(prescription);
             }

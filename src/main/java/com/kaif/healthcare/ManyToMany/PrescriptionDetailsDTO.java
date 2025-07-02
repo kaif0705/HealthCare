@@ -1,4 +1,4 @@
-package com.kaif.healthcare.Payloads;
+package com.kaif.healthcare.ManyToMany;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PrescriptionDTO {
+public class PrescriptionDetailsDTO {
 
     // For the composite ID
     private Long doctorId;
@@ -22,7 +22,7 @@ public class PrescriptionDTO {
     @Size(min = 4)
     private String prescription;
 
-    private PatientDTO patientDTO;
-    private List<MedicineDTO> medicinesDTO= new ArrayList<>();
+    //ID --> owning side
+    private List<Long> medicinesIds= new ArrayList<>();
 
 }

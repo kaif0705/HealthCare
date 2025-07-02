@@ -1,11 +1,9 @@
 package com.kaif.healthcare.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kaif.healthcare.Emuns.Gender;
+import com.kaif.healthcare.ManyToMany.Prescription;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

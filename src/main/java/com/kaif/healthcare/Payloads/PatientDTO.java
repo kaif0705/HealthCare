@@ -1,10 +1,8 @@
 package com.kaif.healthcare.Payloads;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kaif.healthcare.Emuns.Gender;
+import com.kaif.healthcare.ManyToMany.PrescriptionDetailsDTO;
 import com.kaif.healthcare.Model.Address;
-import com.kaif.healthcare.Model.MedicalRecord;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,10 +22,14 @@ public class PatientDTO {
     private int age;
     private Address patientAddress;
 
-    @JsonIgnore
-    private List<PrescriptionDTO> prescriptionDTO= new ArrayList<>();
+    //ID because owning side of F.K
+    private Long medicalRecordId;
 
-    private MedicalRecord medicalRecord;
-    private DoctorDTO doctor;
+    //ID because owning side of F.K
+    private Long doctorID;
+
+    //Object --> Non-owning side
+    private List<PrescriptionDetailsDTO> prescriptionDetailsDTO = new ArrayList<>();
+
 
 }

@@ -1,6 +1,5 @@
-package com.kaif.healthcare.Payloads;
+package com.kaif.healthcare.ManyToMany;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,12 +10,12 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MedicineDTO {
+public class MedicineDetailsDTO {
 
     private Long id;
     private String medicine;
 
-    @JsonIgnore
-    private List<PrescriptionDTO> prescriptionDTO= new ArrayList<>();
+    //Object --> Non-owning side
+    private List<PrescriptionDetailsDTO> prescriptionDetailsDTO = new ArrayList<>();
 
 }

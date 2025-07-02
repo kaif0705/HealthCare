@@ -1,14 +1,16 @@
 package com.kaif.healthcare.Service;
 
 import com.kaif.healthcare.Emuns.Gender;
-import com.kaif.healthcare.Exceptions.APIException;
 import com.kaif.healthcare.Exceptions.ResourceNotFoundException;
 import com.kaif.healthcare.Model.Doctor;
+import com.kaif.healthcare.Model.MedicalRecord;
 import com.kaif.healthcare.Model.Patient;
-import com.kaif.healthcare.Model.Prescription;
+import com.kaif.healthcare.ManyToMany.Prescription;
+import com.kaif.healthcare.Model.PrescriptionId;
 import com.kaif.healthcare.Payloads.PatientDTO;
-import com.kaif.healthcare.Payloads.PrescriptionDTO;
+import com.kaif.healthcare.ManyToMany.PrescriptionDetailsDTO;
 import com.kaif.healthcare.Repositories.DoctorRepo;
+import com.kaif.healthcare.Repositories.MedicalRecordRepo;
 import com.kaif.healthcare.Repositories.PatientRepo;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -26,6 +28,9 @@ public class PatientServiceImpl implements PatientService {
 
     @Autowired
     private DoctorRepo doctorRepo;
+
+    @Autowired
+    private MedicalRecordRepo medicalRecordRepo;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -76,28 +81,37 @@ public class PatientServiceImpl implements PatientService {
         patient.setPatientAddress(patientDTO.getPatientAddress());
 
         //Setting Medical Record
-        patient.setMedicalRecord(patientDTO.getMedicalRecord());
+        MedicalRecord medicalRecord= medicalRecordRepo.findById(patientDTO.getMedicalRecordId()).
+                orElseThrow(() -> new ResourceNotFoundException("Medical Record" + "id" + patientDTO.getMedicalRecordId()));
+        patient.setMedicalRecord(medicalRecord);
+        medicalRecord.setPatient(patient); //for bi-directional relationship
 
         //Setting Doctor
-        if(patientDTO.getDoctor()!=null && patientDTO.getDoctor().getId()!=null) {
+        if(doctorId != null) {
 
-            Doctor existingDoctor= doctorRepo.findById(patientDTO.getDoctor().getId()).
-                    orElseThrow(() -> new ResourceNotFoundException("Doctor Not Found with ID: " + patientDTO.getDoctor().getId()));
+            Doctor existingDoctor= doctorRepo.findById(doctorId).
+                    orElseThrow(() -> new ResourceNotFoundException("Doctor Not Found with ID: " + doctorId));
             patient.setDoctor(existingDoctor);
+
 
         }
 
         //Setting Prescription
         //Changes needed
-        if(patientDTO.getPrescriptionDTO() != null && !patientDTO.getPrescriptionDTO().isEmpty()){
-            List<PrescriptionDTO> patientPrescription= patientDTO.getPrescriptionDTO();
-            for(PrescriptionDTO obj : patientPrescription){
+        if(patientDTO.getPrescriptionDetailsDTO() != null && !patientDTO.getPrescriptionDetailsDTO().isEmpty()){
+            List<PrescriptionDetailsDTO> patientPrescription= patientDTO.getPrescriptionDetailsDTO();
+            for(PrescriptionDetailsDTO obj : patientPrescription){
                 Prescription prescription= modelMapper.map(obj, Prescription.class);
+                //Set composite key
+                PrescriptionId prescriptionId= new PrescriptionId(doctorId, patientDTO.getId());
+                prescription.setId(prescriptionId);
+
                 patient.getPrescription().add(prescription);
             }
         }
 
         //Setting Patient with doctor
+        assert doctorId != null;
         Doctor setPatientDoctor= doctorRepo.findById(doctorId).
                 orElseThrow(() -> new ResourceNotFoundException("Doctor Not Found with ID: " + doctorId));
         patient.setDoctor(setPatientDoctor);

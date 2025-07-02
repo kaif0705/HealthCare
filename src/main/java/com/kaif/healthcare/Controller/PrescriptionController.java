@@ -1,7 +1,7 @@
 package com.kaif.healthcare.Controller;
 
 import com.kaif.healthcare.Model.PrescriptionId;
-import com.kaif.healthcare.Payloads.PrescriptionDTO;
+import com.kaif.healthcare.ManyToMany.PrescriptionDetailsDTO;
 import com.kaif.healthcare.Service.PrescriptionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +19,23 @@ public class PrescriptionController {
 
     /* Create Prescription */
     @PostMapping("/public/prescriptions")
-    public ResponseEntity<PrescriptionDTO> createPrescription(@Valid @RequestBody PrescriptionDTO prescription) {
-        PrescriptionDTO prescriptionDTO = prescriptionService.createPrescription(prescription);
-        return ResponseEntity.ok(prescriptionDTO);
+    public ResponseEntity<PrescriptionDetailsDTO> createPrescription(@Valid @RequestBody PrescriptionDetailsDTO prescription) {
+        PrescriptionDetailsDTO prescriptionDetailsDTO = prescriptionService.createPrescription(prescription);
+        return ResponseEntity.ok(prescriptionDetailsDTO);
     }
 
     /* Get All Prescriptions */
     @GetMapping("/public/prescriptions")
-    public ResponseEntity<List<PrescriptionDTO>> getAllPrescriptions() {
-        List<PrescriptionDTO> prescriptions= prescriptionService.getAllPrescriptions();
+    public ResponseEntity<List<PrescriptionDetailsDTO>> getAllPrescriptions() {
+        List<PrescriptionDetailsDTO> prescriptions= prescriptionService.getAllPrescriptions();
         return ResponseEntity.ok(prescriptions);
     }
 
     /* Get Prescription with ID */
     @GetMapping("/public/prescriptions/PrescriptionId")
-    public ResponseEntity<PrescriptionDTO> getPrescriptionById(@RequestBody PrescriptionId prescriptionId) {
-        PrescriptionDTO prescriptionDTO= prescriptionService.getPrescriptionById(prescriptionId);
-        return ResponseEntity.ok(prescriptionDTO);
+    public ResponseEntity<PrescriptionDetailsDTO> getPrescriptionById(@RequestBody PrescriptionId prescriptionId) {
+        PrescriptionDetailsDTO prescriptionDetailsDTO = prescriptionService.getPrescriptionById(prescriptionId);
+        return ResponseEntity.ok(prescriptionDetailsDTO);
     }
 
     /* Delete Prescription */
@@ -47,8 +47,8 @@ public class PrescriptionController {
 
     /* Update Prescription */
     @PutMapping("/public/prescriptions")
-    public ResponseEntity<PrescriptionDTO> updatePrescription(@RequestBody PrescriptionDTO prescriptionDTO) {
-        PrescriptionDTO update= prescriptionService.updatePrescription(prescriptionDTO);
+    public ResponseEntity<PrescriptionDetailsDTO> updatePrescription(@RequestBody PrescriptionDetailsDTO prescriptionDetailsDTO) {
+        PrescriptionDetailsDTO update= prescriptionService.updatePrescription(prescriptionDetailsDTO);
         return ResponseEntity.ok(update);
     }
 

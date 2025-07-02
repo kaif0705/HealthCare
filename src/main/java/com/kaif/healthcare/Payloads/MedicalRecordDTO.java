@@ -15,7 +15,7 @@ public class MedicalRecordDTO {
     private Long patientId;
     private String diagnose;
 
-    @JsonIgnore
+    //Object --> Non-owning side
     private PatientDTO patientDTO;
 
 }

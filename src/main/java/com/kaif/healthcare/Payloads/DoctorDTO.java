@@ -1,9 +1,7 @@
 package com.kaif.healthcare.Payloads;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kaif.healthcare.Emuns.Gender;
 import com.kaif.healthcare.Model.Address;
-import com.kaif.healthcare.Model.Patient;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
@@ -21,15 +19,16 @@ public class DoctorDTO {
     private Long id;
     private String name;
     private int age;
+    private String email;
+    private String speciality;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    private String email;
+    //Object  --> Embedded Object
     private Address doctorAddress;
-    private String speciality;
 
-    @JsonIgnore
+    //Object --> Non-owning side
     private List<PatientDTO> patients= new ArrayList<>();
 
 }

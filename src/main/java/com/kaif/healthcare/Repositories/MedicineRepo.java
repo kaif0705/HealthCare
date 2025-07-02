@@ -1,6 +1,6 @@
 package com.kaif.healthcare.Repositories;
 
-import com.kaif.healthcare.Model.Medicine;
+import com.kaif.healthcare.ManyToMany.Medicine;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

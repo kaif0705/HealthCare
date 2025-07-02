@@ -1,6 +1,6 @@
 package com.kaif.healthcare.Controller;
 
-import com.kaif.healthcare.Payloads.MedicineDTO;
+import com.kaif.healthcare.ManyToMany.MedicineDetailsDTO;
 import com.kaif.healthcare.Service.MedicineService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,29 +19,29 @@ public class MedicineController {
 
     /* Create Medicine */
     @PostMapping("/public/medicines")
-    public ResponseEntity<MedicineDTO> addMedicine(@Valid @RequestBody MedicineDTO medicine) {
-        MedicineDTO addedMedicine= medicineService.addMedicine(medicine);
+    public ResponseEntity<MedicineDetailsDTO> addMedicine(@Valid @RequestBody MedicineDetailsDTO medicine) {
+        MedicineDetailsDTO addedMedicine= medicineService.addMedicine(medicine);
         return new ResponseEntity<>(addedMedicine, HttpStatus.CREATED);
     }
 
     /* Find All Medicine */
     @GetMapping("/public/medicines")
-    public ResponseEntity<List<MedicineDTO>> getAllMedicines() {
-        List<MedicineDTO> medicines= medicineService.getAllMedicines();
+    public ResponseEntity<List<MedicineDetailsDTO>> getAllMedicines() {
+        List<MedicineDetailsDTO> medicines= medicineService.getAllMedicines();
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
     /* Get Medicine By ID*/
     @GetMapping("/public/medicines/{medicineId}")
-    public ResponseEntity<MedicineDTO> getMedicineById(@PathVariable Long medicineId) {
-        MedicineDTO medicine= medicineService.getMedicine(medicineId);
+    public ResponseEntity<MedicineDetailsDTO> getMedicineById(@PathVariable Long medicineId) {
+        MedicineDetailsDTO medicine= medicineService.getMedicine(medicineId);
         return new ResponseEntity<>(medicine, HttpStatus.OK);
     }
 
     /* Update Medicine */
     @PutMapping("/public/medicines")
-    public ResponseEntity<MedicineDTO> updateMedicine(@Valid @RequestBody MedicineDTO medicineDTO) {
-        MedicineDTO updated= medicineService.updateMedicine(medicineDTO);
+    public ResponseEntity<MedicineDetailsDTO> updateMedicine(@Valid @RequestBody MedicineDetailsDTO medicineDetailsDTO) {
+        MedicineDetailsDTO updated= medicineService.updateMedicine(medicineDetailsDTO);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 

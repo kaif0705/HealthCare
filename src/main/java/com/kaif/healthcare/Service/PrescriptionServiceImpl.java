@@ -1,9 +1,11 @@
 package com.kaif.healthcare.Service;
 
 import com.kaif.healthcare.Exceptions.ResourceNotFoundException;
+import com.kaif.healthcare.ManyToMany.Medicine;
+import com.kaif.healthcare.ManyToMany.Prescription;
 import com.kaif.healthcare.Model.*;
-import com.kaif.healthcare.Payloads.MedicineDTO;
-import com.kaif.healthcare.Payloads.PrescriptionDTO;
+import com.kaif.healthcare.ManyToMany.MedicineDetailsDTO;
+import com.kaif.healthcare.ManyToMany.PrescriptionDetailsDTO;
 import com.kaif.healthcare.Repositories.DoctorRepo;
 import com.kaif.healthcare.Repositories.MedicineRepo;
 import com.kaif.healthcare.Repositories.PatientRepo;
@@ -39,92 +41,119 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     /* Create Prescription */
     @Override
     @Transactional
-    public PrescriptionDTO createPrescription(PrescriptionDTO prescriptionDTO) {
+    //Pending
+    public PrescriptionDetailsDTO createPrescription(PrescriptionDetailsDTO prescriptionDetailsDTO) {
 
-        Prescription prescription= modelMapper.map(prescriptionDTO, Prescription.class);
+        Prescription prescription = new Prescription();
 
-        // 1. Check if Patient And Doctor exists in the DB
-        Doctor doctor= doctorRepo.findById(prescriptionDTO.getDoctorId()).
-                orElseThrow( () -> new ResourceNotFoundException("Doctor", "doctorId", prescriptionDTO.getDoctorId()));
+        //1. Check if Patient and Doctor ID is null
+        Patient patient= patientRepo.findById(prescriptionDetailsDTO.getPatientId()).orElse(null);
+        if(patient == null){
+            throw new ResourceNotFoundException("Patient not found with id: " + prescriptionDetailsDTO.getPatientId());
+        }
 
-        Patient patient= patientRepo.findById(prescriptionDTO.getPatientId()).
-                orElseThrow( () -> new ResourceNotFoundException("Patient", "patientId", prescriptionDTO.getPatientId()));
+        Doctor doctor= doctorRepo.findById(prescriptionDetailsDTO.getDoctorId()).orElse(null);
+        if(doctor == null){
+            throw new ResourceNotFoundException("Doctor not found with id: " + prescriptionDetailsDTO.getDoctorId());
+        }
 
-        // 2. Create the composite ID and set it
-        PrescriptionId prescriptionId = new PrescriptionId(patient.getId(), doctor.getId());
-        prescription.setId(prescriptionId);
+        //2. Create Composite Keys
+        PrescriptionId compositeKey= new PrescriptionId(patient.getId(), doctor.getId());
+        prescription.setId(compositeKey);
 
-        //3. Set Doctor and patient
-        prescription.setDoctorId(doctor);
-        prescription.setPatientId(patient);
+        //3. Add Prescription
+        prescription.setPrescription(prescriptionDetailsDTO.getPrescription());
 
-        // 4. Set Prescription information
-        prescription.setPrescription(prescriptionDTO.getPrescription());
-
-        //Fetch Medicines from prescriptionDTO and set them
+        //4. Add Medicines
         List<Medicine> medicines = new ArrayList<>();
-        if(prescriptionDTO.getMedicinesDTO() != null){
-            for(MedicineDTO medicineDTO : prescriptionDTO.getMedicinesDTO()){
-                Medicine medicine= modelMapper.map(medicineDTO, Medicine.class);
-                medicine.getPrescription().add(prescription);
-                medicines.add(medicine);
-            }
+        for(Long Id : prescriptionDetailsDTO.getMedicinesIds()){
+            Medicine medicine= medicineRepo.findById(Id).orElseThrow(
+                    () -> new ResourceNotFoundException("Medicine not found with id: " + Id)
+            );
+            medicines.add(medicine);
         }
         prescription.setMedicines(medicines);
-        prescriptionRepo.save(prescription);
 
-        return modelMapper.map(prescription, PrescriptionDTO.class);
+        return modelMapper.map(prescription, PrescriptionDetailsDTO.class);
 
     }
 
     /* Get All Prescriptions */
     @Override
     @Transactional
-    public List<PrescriptionDTO> getAllPrescriptions() {
+    public List<PrescriptionDetailsDTO> getAllPrescriptions() {
 
         List<Prescription> prescriptions = prescriptionRepo.findAll();
-        List<PrescriptionDTO> prescriptionDTO = new ArrayList<>();
+
+        List<PrescriptionDetailsDTO> prescriptionDetailsDTO = new ArrayList<>();
         if(!prescriptions.isEmpty()){
             for(Prescription obj : prescriptions){
-                prescriptionDTO.add(modelMapper.map(obj, PrescriptionDTO.class));
+                PrescriptionDetailsDTO dto = modelMapper.map(obj, PrescriptionDetailsDTO.class);
+
+                List<Long> medicineIds= new ArrayList<>();
+                Medicine medicineFromDB= medicineRepo.findById(obj.getPatientId().getId())
+                        .orElseThrow(
+                        () -> new ResourceNotFoundException("Medicine" + "id" + obj.getPatientId().getId())
+                );
+                for(int i= 0; i < obj.getMedicines().size(); i++){
+                    medicineIds.add(medicineFromDB.getId());
+                }
+                dto.setMedicinesIds(medicineIds);
+                prescriptionDetailsDTO.add(dto);
             }
+
         }else{
             throw new ResourceNotFoundException("No prescriptions found");
         }
 
-        return prescriptionDTO;
+        return prescriptionDetailsDTO;
 
     }
 
     @Override
     @Transactional
-    public PrescriptionDTO getPrescriptionById(PrescriptionId prescriptionId) {
+    public PrescriptionDetailsDTO getPrescriptionById(PrescriptionId prescriptionId) {
 
-        PrescriptionId idToFind = new PrescriptionId(prescriptionId.getDoctorId(), prescriptionId.getPatientId());
 
-        Prescription prescription= prescriptionRepo.findById(idToFind).
+        Prescription prescriptionFromDB= prescriptionRepo.findById(prescriptionId).
                 orElseThrow(() -> new ResourceNotFoundException("PrescriptionId not found"));
 
-        //Need to initialize lazy loaded entities
-        if(prescription.getPatientId() != null){
-            Hibernate.initialize(prescription.getPatientId());
+        PrescriptionDetailsDTO dto= modelMapper.map(prescriptionFromDB, PrescriptionDetailsDTO.class);
+//
+//        //Need to initialize lazy loaded entities
+//        if(prescriptionFromDB.getPatientId() != null){
+//            Hibernate.initialize(prescriptionFromDB.getPatientId());
+//        }
+//
+//        if(prescriptionFromDB.getMedicines() != null){
+//            Hibernate.initialize(prescriptionFromDB.getMedicines());
+//        }
+
+        //Set Patient ID
+        dto.setPatientId(prescriptionFromDB.getPatientId().getId());
+
+        //Set Doctor ID
+        dto.setDoctorId(prescriptionFromDB.getDoctorId().getId());
+
+        //Set Prescription
+        dto.setPrescription(prescriptionFromDB.getPrescription());
+
+        //Set Medicines
+        List<Long> medicines = new ArrayList<>();
+        for(Medicine obj : prescriptionFromDB.getMedicines()){
+            medicines.add(obj.getId());
         }
+        dto.setMedicinesIds(medicines);
 
-        if(prescription.getMedicines() != null){
-            Hibernate.initialize(prescription.getMedicines());
-        }
-
-        prescription.setPatientId(prescription.getPatientId());
-        prescription.setMedicines(prescription.getMedicines());
-
-        return modelMapper.map(prescription, PrescriptionDTO.class);
+        return dto;
     }
 
     @Override
     @Transactional
+    //Pending
     public String deletePrescriptionById(PrescriptionId prescriptionId) {
         if(prescriptionRepo.findById(prescriptionId).isEmpty()){
-            throw new ResourceNotFoundException("PrescriptionId not found");
+            throw new ResourceNotFoundException("Prescription" + "id: " + prescriptionId);
         }else{
             prescriptionRepo.deleteById(prescriptionId);
         }
@@ -133,24 +162,35 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
     @Override
     @Transactional
-    public PrescriptionDTO updatePrescription(PrescriptionDTO prescriptionDTO) {
+    public PrescriptionDetailsDTO updatePrescription(PrescriptionDetailsDTO prescriptionDetailsDTO) {
+
+        PrescriptionDetailsDTO dto= modelMapper.map(prescriptionDetailsDTO, PrescriptionDetailsDTO.class);
 
         //Check if prescription exits with ID
-        PrescriptionId prescriptionId= new PrescriptionId(prescriptionDTO.getDoctorId(), prescriptionDTO.getPatientId());
+        PrescriptionId prescriptionId= new PrescriptionId(prescriptionDetailsDTO.getDoctorId(), prescriptionDetailsDTO.getPatientId());
         Prescription prescriptionFromDB= prescriptionRepo.findById(prescriptionId).
-                orElseThrow( () -> new ResourceNotFoundException("PrescriptionId not found"));
+                orElseThrow( () -> new ResourceNotFoundException("Prescription" + "id" + prescriptionId));
 
-        prescriptionFromDB.setPrescription(prescriptionDTO.getPrescription());
+        prescriptionFromDB.setPrescription(prescriptionDetailsDTO.getPrescription());
+        dto.setPrescription(prescriptionFromDB.getPrescription());
 
+        //Setting Medicines
         prescriptionFromDB.getMedicines().clear();
-        for(MedicineDTO obj : prescriptionDTO.getMedicinesDTO()){
-            Medicine medicine= modelMapper.map(obj, Medicine.class);
-            prescriptionFromDB.getMedicines().add(medicine);
+        List<Medicine> medicines= medicineRepo.findAllById(prescriptionDetailsDTO.getMedicinesIds());
+        if(medicines.isEmpty()){
+            throw new ResourceNotFoundException("No medicines found with id: " + prescriptionDetailsDTO.getMedicinesIds());
         }
+        prescriptionFromDB.setMedicines(medicines);
 
-        Prescription udatedPrescription= prescriptionRepo.save(prescriptionFromDB);
+        List<Long> medicineIds= new ArrayList<>();
+        for(Medicine obj : medicines){
+            medicineIds.add(obj.getId());
+        }
+        dto.setMedicinesIds(medicineIds);
 
-        return modelMapper.map(udatedPrescription, PrescriptionDTO.class);
+        prescriptionRepo.save(prescriptionFromDB);
+
+        return dto;
     }
 
 }

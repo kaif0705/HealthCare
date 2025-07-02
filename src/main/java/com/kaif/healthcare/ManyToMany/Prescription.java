@@ -1,5 +1,8 @@
-package com.kaif.healthcare.Model;
+package com.kaif.healthcare.ManyToMany;
 
+import com.kaif.healthcare.Model.Doctor;
+import com.kaif.healthcare.Model.Patient;
+import com.kaif.healthcare.Model.PrescriptionId;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

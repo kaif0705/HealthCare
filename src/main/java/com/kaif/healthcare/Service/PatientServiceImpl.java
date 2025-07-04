@@ -1,23 +1,28 @@
 package com.kaif.healthcare.Service;
 
 import com.kaif.healthcare.Emuns.Gender;
+import com.kaif.healthcare.Exceptions.APIException;
 import com.kaif.healthcare.Exceptions.ResourceNotFoundException;
-import com.kaif.healthcare.Model.Doctor;
-import com.kaif.healthcare.Model.MedicalRecord;
-import com.kaif.healthcare.Model.Patient;
+import com.kaif.healthcare.ManyToMany.Medicine;
+import com.kaif.healthcare.ManyToMany.MedicineDetailsDTO;
 import com.kaif.healthcare.ManyToMany.Prescription;
-import com.kaif.healthcare.Model.PrescriptionId;
-import com.kaif.healthcare.Payloads.PatientDTO;
 import com.kaif.healthcare.ManyToMany.PrescriptionDetailsDTO;
+import com.kaif.healthcare.Model.Doctor;
+import com.kaif.healthcare.Model.Patient;
+import com.kaif.healthcare.Payloads.PatientDTOs.CreatePatientDTO;
+import com.kaif.healthcare.Payloads.PatientDTOs.PatientDTO;
+import com.kaif.healthcare.Payloads.PatientDTOs.UpdatePatientDTO;
 import com.kaif.healthcare.Repositories.DoctorRepo;
 import com.kaif.healthcare.Repositories.MedicalRecordRepo;
 import com.kaif.healthcare.Repositories.PatientRepo;
+import com.kaif.healthcare.Repositories.PrescriptionRepo;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -31,6 +36,9 @@ public class PatientServiceImpl implements PatientService {
 
     @Autowired
     private MedicalRecordRepo medicalRecordRepo;
+
+    @Autowired
+    private PrescriptionRepo prescriptionRepo;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -53,23 +61,48 @@ public class PatientServiceImpl implements PatientService {
 
     /* Get Patient By Id*/
     public PatientDTO getPatientById(Long patientId){
+
+        //Check if Patient ID is null
+        if(patientId == null){
+            throw new APIException("Patient id is null");
+        }
+
+        //Check if patient exists in DB
         Patient patientWithId= patientRepo.findById(patientId).
                 orElseThrow(() -> new ResourceNotFoundException("Patient Not Found"));
 
-        return modelMapper.map(patientWithId, PatientDTO.class);
+        List<Prescription> patientPrescription= prescriptionRepo.findPrescriptionByPatientId(patientId);
+        patientWithId.setPrescription(patientPrescription);
+
+        PatientDTO dtos= modelMapper.map(patientWithId, PatientDTO.class);
+
+        for(Prescription prescription: patientPrescription){
+            List<PrescriptionDetailsDTO> dto= new ArrayList<>(Collections.singletonList(modelMapper.map(prescription, PrescriptionDetailsDTO.class)));
+            List<Medicine> medicines= prescription.getMedicines();
+
+            for(Medicine medicine: medicines){
+                for(PrescriptionDetailsDTO prescriptionDetailsDTO: dto){
+                    prescriptionDetailsDTO.addMedicineId(medicine.getId());
+                }
+            }
+            dtos.setPrescriptionDetailsDTO(dto);
+        }
+
+        return dtos;
     }
 
 
     /* Create Patient */
+    @Override
     @Transactional
-    public PatientDTO addPatient(PatientDTO patientDTO, Long doctorId){
+    public CreatePatientDTO addPatient(CreatePatientDTO patientDTO, Long doctorId){
 
         Patient patient= modelMapper.map(patientDTO, Patient.class);
 
         //Check if Patient Already exists
-//        if(patientRepo.findByEmail(patientDTO.getEmail().toString()).isPresent()){
-//            throw new APIException("Patient With Email Already Exists");
-//        }
+        if(patientRepo.findPatientByEmail(patientDTO.getEmail()).isPresent()){
+            throw new APIException("Patient With Email Already Exists");
+        }
         //Setting Patients Gender
         if(patientDTO.getGender().equals(Gender.MALE)){
             patient.setGender(Gender.MALE);
@@ -80,37 +113,9 @@ public class PatientServiceImpl implements PatientService {
         //Setting Patient Address
         patient.setPatientAddress(patientDTO.getPatientAddress());
 
-        //Setting Medical Record
-        MedicalRecord medicalRecord= medicalRecordRepo.findById(patientDTO.getMedicalRecordId()).
-                orElseThrow(() -> new ResourceNotFoundException("Medical Record" + "id" + patientDTO.getMedicalRecordId()));
-        patient.setMedicalRecord(medicalRecord);
-        medicalRecord.setPatient(patient); //for bi-directional relationship
-
-        //Setting Doctor
-        if(doctorId != null) {
-
-            Doctor existingDoctor= doctorRepo.findById(doctorId).
-                    orElseThrow(() -> new ResourceNotFoundException("Doctor Not Found with ID: " + doctorId));
-            patient.setDoctor(existingDoctor);
-
-
-        }
-
-        //Setting Prescription
-        //Changes needed
-        if(patientDTO.getPrescriptionDetailsDTO() != null && !patientDTO.getPrescriptionDetailsDTO().isEmpty()){
-            List<PrescriptionDetailsDTO> patientPrescription= patientDTO.getPrescriptionDetailsDTO();
-            for(PrescriptionDetailsDTO obj : patientPrescription){
-                Prescription prescription= modelMapper.map(obj, Prescription.class);
-                //Set composite key
-                PrescriptionId prescriptionId= new PrescriptionId(doctorId, patientDTO.getId());
-                prescription.setId(prescriptionId);
-
-                patient.getPrescription().add(prescription);
-            }
-        }
 
         //Setting Patient with doctor
+
         assert doctorId != null;
         Doctor setPatientDoctor= doctorRepo.findById(doctorId).
                 orElseThrow(() -> new ResourceNotFoundException("Doctor Not Found with ID: " + doctorId));
@@ -119,25 +124,30 @@ public class PatientServiceImpl implements PatientService {
         //Saving Patient
         patientRepo.save(patient);
 
-        return modelMapper.map(patient, PatientDTO.class);
+        return modelMapper.map(patient, CreatePatientDTO    .class);
 
     }
 
     /*Delete a Patient*/
+    @Override
+    @Transactional
     public String deletePatient(Long patientId){
-        patientRepo.deleteById(patientId);
+        Patient patient= patientRepo.findById(patientId)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient Not Found"));
+        patientRepo.deletePatientByEmail(patient.getEmail());
         return "Patient Deleted with Id: " + patientId;
     }
 
     /*Update a Patient*/
-    public String updatePatient(Long patientId, PatientDTO patientDTO){
+    public String updatePatient(Long patientId, UpdatePatientDTO dtos){
         //Check if patient exist in the DB
         Patient checkId= patientRepo.findById(patientId).
                 orElseThrow(() -> new ResourceNotFoundException("Patient Not Found"));
 
-        checkId.setName(patientDTO.getName());
-        checkId.setAge(patientDTO.getAge());
-        checkId.setEmail(patientDTO.getEmail());
+        checkId.setName(dtos.getName());
+        checkId.setAge(dtos.getAge());
+        checkId.setEmail(dtos.getEmail());
+        checkId.setPatientAddress(dtos.getPatientAddress());
 
         patientRepo.save(checkId);
 

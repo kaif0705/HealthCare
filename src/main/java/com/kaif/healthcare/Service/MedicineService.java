@@ -1,13 +1,14 @@
 package com.kaif.healthcare.Service;
 
 import com.kaif.healthcare.ManyToMany.MedicineDetailsDTO;
+import com.kaif.healthcare.ManyToMany.MedicineListDTO;
 
 import java.util.List;
 
 public interface MedicineService {
-    MedicineDetailsDTO addMedicine(MedicineDetailsDTO medicine);
-    List<MedicineDetailsDTO> getAllMedicines();
-    MedicineDetailsDTO getMedicine(Long medicineId);
+    MedicineListDTO addMedicine(MedicineListDTO medicine);
+    List<MedicineListDTO> getAllMedicines();
+    MedicineListDTO getMedicine(Long medicineId);
     String deleteMedicine(Long medicineId);
-    MedicineDetailsDTO updateMedicine(MedicineDetailsDTO medicineDetailsDTO);
+    MedicineListDTO updateMedicine(MedicineListDTO medicineListDTO);
 }

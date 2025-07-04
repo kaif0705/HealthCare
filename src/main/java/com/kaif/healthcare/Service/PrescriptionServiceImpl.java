@@ -11,7 +11,6 @@ import com.kaif.healthcare.Repositories.MedicineRepo;
 import com.kaif.healthcare.Repositories.PatientRepo;
 import com.kaif.healthcare.Repositories.PrescriptionRepo;
 import jakarta.transaction.Transactional;
-import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,21 +43,17 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     //Pending
     public PrescriptionDetailsDTO createPrescription(PrescriptionDetailsDTO prescriptionDetailsDTO) {
 
-        Prescription prescription = new Prescription();
+        Prescription prescription = modelMapper.map(prescriptionDetailsDTO, Prescription.class);
 
         //1. Check if Patient and Doctor ID is null
         Patient patient= patientRepo.findById(prescriptionDetailsDTO.getPatientId()).orElse(null);
-        if(patient == null){
-            throw new ResourceNotFoundException("Patient not found with id: " + prescriptionDetailsDTO.getPatientId());
-        }
-
         Doctor doctor= doctorRepo.findById(prescriptionDetailsDTO.getDoctorId()).orElse(null);
-        if(doctor == null){
-            throw new ResourceNotFoundException("Doctor not found with id: " + prescriptionDetailsDTO.getDoctorId());
+        if(patient == null && doctor == null){
+            throw new ResourceNotFoundException("Please enter a valid patient id or a valid doctor id!!!");
         }
 
         //2. Create Composite Keys
-        PrescriptionId compositeKey= new PrescriptionId(patient.getId(), doctor.getId());
+        PrescriptionId compositeKey= new PrescriptionId(prescriptionDetailsDTO.getPatientId(), prescriptionDetailsDTO.getDoctorId());
         prescription.setId(compositeKey);
 
         //3. Add Prescription
@@ -66,15 +61,27 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
         //4. Add Medicines
         List<Medicine> medicines = new ArrayList<>();
+        List<Long> medicinesId= new ArrayList<>();
         for(Long Id : prescriptionDetailsDTO.getMedicinesIds()){
             Medicine medicine= medicineRepo.findById(Id).orElseThrow(
                     () -> new ResourceNotFoundException("Medicine not found with id: " + Id)
             );
+            medicinesId.add(medicine.getId());
             medicines.add(medicine);
         }
         prescription.setMedicines(medicines);
 
-        return modelMapper.map(prescription, PrescriptionDetailsDTO.class);
+
+        //Save Prescription
+        prescriptionRepo.save(prescription);
+
+        PrescriptionDetailsDTO dto= modelMapper.map(prescription, PrescriptionDetailsDTO.class);
+        dto.setMedicinesIds(medicinesId);
+        //Set patientId and doctorId
+        dto.setPatientId(patient.getId());
+        dto.setDoctorId(doctor.getId());
+
+        return dto;
 
     }
 
@@ -87,21 +94,14 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
         List<PrescriptionDetailsDTO> prescriptionDetailsDTO = new ArrayList<>();
         if(!prescriptions.isEmpty()){
-            for(Prescription obj : prescriptions){
-                PrescriptionDetailsDTO dto = modelMapper.map(obj, PrescriptionDetailsDTO.class);
+            for(Prescription prescription : prescriptions){
+                PrescriptionDetailsDTO dto = modelMapper.map(prescription, PrescriptionDetailsDTO.class);
 
-                List<Long> medicineIds= new ArrayList<>();
-                Medicine medicineFromDB= medicineRepo.findById(obj.getPatientId().getId())
-                        .orElseThrow(
-                        () -> new ResourceNotFoundException("Medicine" + "id" + obj.getPatientId().getId())
-                );
-                for(int i= 0; i < obj.getMedicines().size(); i++){
-                    medicineIds.add(medicineFromDB.getId());
+                for(Medicine medicine : prescription.getMedicines()){
+                    dto.getMedicinesIds().add(medicine.getId());
                 }
-                dto.setMedicinesIds(medicineIds);
                 prescriptionDetailsDTO.add(dto);
             }
-
         }else{
             throw new ResourceNotFoundException("No prescriptions found");
         }
@@ -170,6 +170,10 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         PrescriptionId prescriptionId= new PrescriptionId(prescriptionDetailsDTO.getDoctorId(), prescriptionDetailsDTO.getPatientId());
         Prescription prescriptionFromDB= prescriptionRepo.findById(prescriptionId).
                 orElseThrow( () -> new ResourceNotFoundException("Prescription" + "id" + prescriptionId));
+
+        if(prescriptionFromDB == null){
+            throw new ResourceNotFoundException("Prescription" + "id" + prescriptionId);
+        }
 
         prescriptionFromDB.setPrescription(prescriptionDetailsDTO.getPrescription());
         dto.setPrescription(prescriptionFromDB.getPrescription());

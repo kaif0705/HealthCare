@@ -3,6 +3,7 @@ package com.kaif.healthcare.Service;
 import com.kaif.healthcare.Exceptions.APIException;
 import com.kaif.healthcare.ManyToMany.Medicine;
 import com.kaif.healthcare.ManyToMany.MedicineDetailsDTO;
+import com.kaif.healthcare.ManyToMany.MedicineListDTO;
 import com.kaif.healthcare.Repositories.MedicineRepo;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -23,38 +24,36 @@ public class MedicineServiceImpl implements MedicineService {
 
     @Override
     @Transactional
-    public MedicineDetailsDTO addMedicine(MedicineDetailsDTO medicineDetailsDTO) {
+    public MedicineListDTO addMedicine(MedicineListDTO medicineListDTO) {
 
-        Medicine medicine= modelMapper.map(medicineDetailsDTO, Medicine.class);
+        Medicine medicine= modelMapper.map(medicineListDTO, Medicine.class);
 
-        if(medicineDetailsDTO ==null){
+        if(medicineListDTO ==null){
             throw new APIException("Medicine cannot be null");
         }
 
-        if(medicineRepo.findByName(medicineDetailsDTO.getMedicine()) != null){
-            throw new APIException("Medicine already exists with Name: " + medicineDetailsDTO.getMedicine() );
+        if(medicineRepo.findByName(medicineListDTO.getMedicine()) != null){
+            throw new APIException("Medicine already exists with Name: " + medicineListDTO.getMedicine() );
         }
-
-        medicine.setMedicine(medicineDetailsDTO.getMedicine());
 
         medicineRepo.save(medicine);
 
-        return modelMapper.map(medicine, MedicineDetailsDTO.class);
+        return modelMapper.map(medicine, MedicineListDTO.class);
 
     }
 
     @Override
     @Transactional
-    public List<MedicineDetailsDTO> getAllMedicines() {
+    public List<MedicineListDTO> getAllMedicines() {
         List<Medicine> medicines= medicineRepo.findAll();
 
         if(medicines.isEmpty()){
             throw new APIException("No medicines found");
         }
 
-        List<MedicineDetailsDTO> medicineDetailsDTOS = new ArrayList<>();
+        List<MedicineListDTO> medicineDetailsDTOS = new ArrayList<>();
         for(Medicine medicine: medicines){
-            medicineDetailsDTOS.add(modelMapper.map(medicine, MedicineDetailsDTO.class));
+            medicineDetailsDTOS.add(modelMapper.map(medicine, MedicineListDTO.class));
         }
 
         return medicineDetailsDTOS;
@@ -62,7 +61,7 @@ public class MedicineServiceImpl implements MedicineService {
 
     @Override
     @Transactional
-    public MedicineDetailsDTO getMedicine(Long medicineId) {
+    public MedicineListDTO getMedicine(Long medicineId) {
 
         //If MedicineId is null
         if(medicineId == null){
@@ -71,16 +70,14 @@ public class MedicineServiceImpl implements MedicineService {
 
         //If medicine does not exist
         Medicine medicine= medicineRepo.findById(medicineId).orElse(null);
+
         if(medicine!=null){
             //Return MedicineDTO
-            MedicineDetailsDTO medicineDetailsDTO = new MedicineDetailsDTO();
-            medicineDetailsDTO.setId(medicineId);
-            medicineDetailsDTO.setMedicine(medicine.getMedicine());
-
-            return medicineDetailsDTO;
+            return modelMapper.map(medicine, MedicineListDTO.class);
         }else{
             throw new APIException("Medicine not found with ID: " + medicineId);
         }
+
     }
 
     @Override
@@ -106,26 +103,26 @@ public class MedicineServiceImpl implements MedicineService {
 
     @Override
     @Transactional
-    public MedicineDetailsDTO updateMedicine(MedicineDetailsDTO medicineDetailsDTO){
+    public MedicineListDTO updateMedicine(MedicineListDTO medicineListDTO){
 
         //Check if ID is Null
-        if(medicineDetailsDTO ==null){
-            throw new APIException("Medicine cannot be null");
+        if(medicineListDTO.getId() == null && medicineListDTO.getMedicine() == null){
+            throw new APIException("Medicine ID or Medicine Name cannot be Null!!!");
         }
 
         //Check if Medicine exits in DB
-        Medicine medicine= medicineRepo.findById(medicineDetailsDTO.getId()).orElse(null);
+        Medicine medicine= medicineRepo.findById(medicineListDTO.getId()).orElse(null);
         if(medicine==null){
-            throw new APIException("Medicine not found with ID: " + medicineDetailsDTO.getId());
+            throw new APIException("Medicine not found with ID: " + medicineListDTO.getId());
         }
 
-        if(medicineRepo.findByName(medicineDetailsDTO.getMedicine()) != null){
-            throw new APIException("Medicine already exists with Name: " + medicineDetailsDTO.getMedicine() );
+        if(medicineRepo.findByName(medicineListDTO.getMedicine()) != null){
+            throw new APIException("Medicine already exists with Name: " + medicineListDTO.getMedicine() );
         }
 
-        medicine.setMedicine(medicineDetailsDTO.getMedicine());
+        medicine.setMedicine(medicineListDTO.getMedicine());
         medicineRepo.save(medicine);
 
-        return modelMapper.map(medicine, MedicineDetailsDTO.class);
+        return modelMapper.map(medicine, MedicineListDTO.class);
     }
 }

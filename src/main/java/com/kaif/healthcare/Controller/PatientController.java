@@ -1,8 +1,9 @@
 package com.kaif.healthcare.Controller;
 
-import com.kaif.healthcare.Model.Patient;
-import com.kaif.healthcare.Payloads.PatientDTO;
+import com.kaif.healthcare.Payloads.PatientDTOs.CreatePatientDTO;
+import com.kaif.healthcare.Payloads.PatientDTOs.PatientDTO;
 //import com.kaif.healthcare.Service.PatientService;
+import com.kaif.healthcare.Payloads.PatientDTOs.UpdatePatientDTO;
 import com.kaif.healthcare.Service.PatientService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,16 +40,16 @@ public class PatientController {
 
     /* Create Patient */
     @PostMapping("/public/patients/{doctorId}")
-    public ResponseEntity<PatientDTO> createPatient(@Valid @RequestBody PatientDTO patientDTO, @PathVariable Long doctorId){
-        PatientDTO patient= patientService.addPatient(patientDTO, doctorId);
+    public ResponseEntity<CreatePatientDTO> createPatient(@Valid @RequestBody CreatePatientDTO patientDTO, @PathVariable Long doctorId){
+        CreatePatientDTO patient= patientService.addPatient(patientDTO, doctorId);
         return new ResponseEntity<>(patient, HttpStatus.OK);
 
     }
 
     /* Update Patient */
     @PutMapping("/public/patient/{patientId}")
-    public ResponseEntity<String> updatePatient(@Valid @PathVariable Long patientId, @RequestBody PatientDTO patientDTO){
-        String updatedPatient= patientService.updatePatient(patientId, patientDTO);
+    public ResponseEntity<String> updatePatient(@Valid @PathVariable Long patientId, @RequestBody UpdatePatientDTO dtos){
+        String updatedPatient= patientService.updatePatient(patientId, dtos);
         return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
     }
 

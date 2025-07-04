@@ -1,19 +1,13 @@
 package com.kaif.healthcare.Service;
 
-import com.kaif.healthcare.Emuns.Gender;
 import com.kaif.healthcare.Exceptions.APIException;
 import com.kaif.healthcare.Exceptions.ResourceNotFoundException;
-import com.kaif.healthcare.Model.Address;
 import com.kaif.healthcare.Model.Doctor;
-import com.kaif.healthcare.Payloads.DoctorDTO;
-import com.kaif.healthcare.Payloads.PatientDTO;
+import com.kaif.healthcare.Payloads.DoctorDTOs.DoctorDTO;
 import com.kaif.healthcare.Repositories.DoctorRepo;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

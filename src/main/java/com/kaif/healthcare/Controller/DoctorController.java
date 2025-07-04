@@ -1,6 +1,6 @@
 package com.kaif.healthcare.Controller;
 
-import com.kaif.healthcare.Payloads.DoctorDTO;
+import com.kaif.healthcare.Payloads.DoctorDTOs.DoctorDTO;
 import com.kaif.healthcare.Service.DoctorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

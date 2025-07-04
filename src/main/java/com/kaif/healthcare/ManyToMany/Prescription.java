@@ -6,14 +6,13 @@ import com.kaif.healthcare.Model.PrescriptionId;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -38,7 +37,7 @@ public class Prescription {
     private Doctor doctorId;
 
     @MapsId("patientId") //tells JPA that PrescriptionId entities patientId field gets it P.K from Patient class
-    @ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, fetch= FetchType.LAZY, optional= false)
+    @ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.REMOVE}, fetch= FetchType.LAZY, optional= false)
     @JoinColumn(name= "patient_id")
     private Patient patientId;
 

@@ -1,7 +1,6 @@
 package com.kaif.healthcare.Service;
 
-import com.kaif.healthcare.Payloads.DoctorDTO;
-import jakarta.validation.Valid;
+import com.kaif.healthcare.Payloads.DoctorDTOs.DoctorDTO;
 
 import java.util.List;
 

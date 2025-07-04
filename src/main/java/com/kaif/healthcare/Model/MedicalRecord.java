@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @NoArgsConstructor
@@ -19,6 +20,7 @@ public class MedicalRecord {
 
     @OneToOne(mappedBy= "medicalRecord", fetch = FetchType.LAZY)
     @JsonIgnore
+    @ToString.Exclude
     private Patient patient;
 
     public MedicalRecord(String diagnose) {

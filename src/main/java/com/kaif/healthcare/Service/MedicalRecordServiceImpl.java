@@ -4,8 +4,8 @@ import com.kaif.healthcare.Exceptions.APIException;
 import com.kaif.healthcare.Exceptions.ResourceNotFoundException;
 import com.kaif.healthcare.Model.MedicalRecord;
 import com.kaif.healthcare.Model.Patient;
-import com.kaif.healthcare.Payloads.MedicalRecordDTO;
-import com.kaif.healthcare.Payloads.PatientDTO;
+import com.kaif.healthcare.Payloads.MedicalRecordDTOs.MedicalRecordDTO;
+import com.kaif.healthcare.Payloads.PatientDTOs.PatientDTO;
 import com.kaif.healthcare.Repositories.MedicalRecordRepo;
 import com.kaif.healthcare.Repositories.PatientRepo;
 import jakarta.transaction.Transactional;
@@ -38,21 +38,21 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
             throw new APIException("Patient ID Is Required!!!");
         }
 
-        //Fetch Patient from DB using patientId
-        Patient patient= patientRepo.findById(medicalRecordDTO.getPatientId()).
-                orElseThrow(() -> new ResourceNotFoundException("Patient", "id", medicalRecordDTO.getPatientId()));
-
-        //Set Patient
-        medicalRecord.setPatient((patient));
-
         //Set Diagnose
         if(medicalRecordDTO.getDiagnose() != null){
-            medicalRecord.setDiagnose(medicalRecordDTO.getDiagnose());
+            throw new APIException("Please enter diagnose!!!");
         }
 
         medicalRecordRepo.save(medicalRecord);
 
-        return modelMapper.map(medicalRecord, MedicalRecordDTO.class);
+        medicalRecord.setPatient(patientRepo.getOne(medicalRecordDTO.getPatientId()));
+
+        MedicalRecordDTO dto= modelMapper.map(medicalRecord, MedicalRecordDTO.class);
+
+        //Set Patient
+//        dto.setPatientDTO(modelMapper.map(patient, PatientDTO.class));
+
+        return dto;
     }
 
     @Override
@@ -64,20 +64,19 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
             throw new APIException("Medical Record ID Is Required!!!");
         }
 
-        MedicalRecordDTO medicalRecordDTO = new MedicalRecordDTO();
-
+        //Fetch medical record
         MedicalRecord medicalRecord= medicalRecordRepo.findById(medicalRecordId)
                 .orElseThrow(() -> new ResourceNotFoundException("MedicalRecord", "id", medicalRecordId));
 
-        medicalRecordDTO.setId(medicalRecord.getId());
+        //Fetch Patient
+        Patient patient= patientRepo.findPatientByMedicalRecordId(medicalRecord.getId());
+        medicalRecord.setPatient(patient);
 
-        //Set Patient ID
-        medicalRecordDTO.setPatientId(medicalRecord.getPatient().getId());
+        //Set PatientDTO in MedicalRecordDTO
+        MedicalRecordDTO dto= modelMapper.map(medicalRecord, MedicalRecordDTO.class);
+        dto.setPatientDTO(modelMapper.map(patient, PatientDTO.class));
 
-        //Set Diagnose
-        medicalRecordDTO.setDiagnose(medicalRecord.getDiagnose());
-
-        return medicalRecordDTO;
+        return dto;
     }
 
     @Override

@@ -1,7 +1,6 @@
-package com.kaif.healthcare.Payloads;
+package com.kaif.healthcare.Payloads.MedicalRecordDTOs;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kaif.healthcare.Payloads.PatientDTOs.PatientDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

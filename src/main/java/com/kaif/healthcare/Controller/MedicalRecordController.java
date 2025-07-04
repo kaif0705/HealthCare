@@ -1,6 +1,6 @@
 package com.kaif.healthcare.Controller;
 
-import com.kaif.healthcare.Payloads.MedicalRecordDTO;
+import com.kaif.healthcare.Payloads.MedicalRecordDTOs.MedicalRecordDTO;
 import com.kaif.healthcare.Service.MedicalRecordService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

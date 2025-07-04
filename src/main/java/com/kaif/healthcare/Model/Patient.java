@@ -4,16 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kaif.healthcare.ManyToMany.Prescription;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -48,13 +49,17 @@ public class Patient extends Person {
     }
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @JoinColumn(name= "medical_record_id")
+    @JoinColumn(name= "medical_record_id", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @Valid
+    @ToString.Exclude
     private MedicalRecord medicalRecord;
 
     @ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @JoinColumn(name= "doctor_id")
+    @JoinColumn(name = "doctor_id", referencedColumnName = "id") // nullable = false is common for CASCADE
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @Valid
+    @ToString.Exclude
     private Doctor doctor;
 
     @OneToMany(mappedBy = "prescription", fetch= FetchType.LAZY)

@@ -1,7 +1,8 @@
-package com.kaif.healthcare.Payloads;
+package com.kaif.healthcare.Payloads.DoctorDTOs;
 
 import com.kaif.healthcare.Emuns.Gender;
 import com.kaif.healthcare.Model.Address;
+import com.kaif.healthcare.Payloads.PatientDTOs.PatientDTO;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;

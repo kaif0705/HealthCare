@@ -1,7 +1,8 @@
 package com.kaif.healthcare.Service;
 
-import com.kaif.healthcare.Model.Patient;
-import com.kaif.healthcare.Payloads.PatientDTO;
+import com.kaif.healthcare.Payloads.PatientDTOs.CreatePatientDTO;
+import com.kaif.healthcare.Payloads.PatientDTOs.PatientDTO;
+import com.kaif.healthcare.Payloads.PatientDTOs.UpdatePatientDTO;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface PatientService {
     PatientDTO getPatientById(Long patientId);
 
     //Create
-    PatientDTO addPatient(PatientDTO patientDTO, Long doctorId);
+    CreatePatientDTO addPatient(CreatePatientDTO patientDTO, Long doctorId);
     String deletePatient(Long patientId);
-    String updatePatient(Long patientId, PatientDTO patientDTO);
+    String updatePatient(Long patientId, UpdatePatientDTO patientDTO);
 }

@@ -25,4 +25,8 @@ public class PrescriptionDetailsDTO {
     //ID --> owning side
     private List<Long> medicinesIds= new ArrayList<>();
 
+    public void addMedicineId(Long medicineId) {
+        medicinesIds.add(medicineId);
+    }
+
 }

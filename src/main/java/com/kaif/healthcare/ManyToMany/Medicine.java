@@ -26,10 +26,6 @@ public class Medicine {
     @NotBlank
     private String medicine;
 
-    public Medicine(String medicine){
-        this.medicine= medicine;
-    }
-
     @ManyToMany(mappedBy= "medicines", cascade= {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     private List<Prescription> prescription= new ArrayList<>();

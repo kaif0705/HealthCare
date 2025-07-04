@@ -4,7 +4,6 @@ import com.kaif.healthcare.Exceptions.ResourceNotFoundException;
 import com.kaif.healthcare.ManyToMany.Medicine;
 import com.kaif.healthcare.ManyToMany.Prescription;
 import com.kaif.healthcare.Model.*;
-import com.kaif.healthcare.ManyToMany.MedicineDetailsDTO;
 import com.kaif.healthcare.ManyToMany.PrescriptionDetailsDTO;
 import com.kaif.healthcare.Repositories.DoctorRepo;
 import com.kaif.healthcare.Repositories.MedicineRepo;

@@ -39,7 +39,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
         }
 
         //Set Diagnose
-        if(medicalRecordDTO.getDiagnose() != null){
+        if(medicalRecordDTO.getDiagnose() == null){
             throw new APIException("Please enter diagnose!!!");
         }
 
@@ -47,12 +47,11 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
         medicalRecord.setPatient(patientRepo.getOne(medicalRecordDTO.getPatientId()));
 
-        MedicalRecordDTO dto= modelMapper.map(medicalRecord, MedicalRecordDTO.class);
+        return modelMapper.map(medicalRecord, MedicalRecordDTO.class);
 
         //Set Patient
 //        dto.setPatientDTO(modelMapper.map(patient, PatientDTO.class));
 
-        return dto;
     }
 
     @Override

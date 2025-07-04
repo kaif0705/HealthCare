@@ -1,6 +1,5 @@
 package com.kaif.healthcare.Service;
 
-import com.kaif.healthcare.ManyToMany.MedicineDetailsDTO;
 import com.kaif.healthcare.ManyToMany.MedicineListDTO;
 
 import java.util.List;

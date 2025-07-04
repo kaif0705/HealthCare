@@ -2,7 +2,6 @@ package com.kaif.healthcare.Service;
 
 import com.kaif.healthcare.Exceptions.APIException;
 import com.kaif.healthcare.ManyToMany.Medicine;
-import com.kaif.healthcare.ManyToMany.MedicineDetailsDTO;
 import com.kaif.healthcare.ManyToMany.MedicineListDTO;
 import com.kaif.healthcare.Repositories.MedicineRepo;
 import jakarta.transaction.Transactional;

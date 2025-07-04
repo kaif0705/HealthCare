@@ -1,6 +1,5 @@
 package com.kaif.healthcare.Controller;
 
-import com.kaif.healthcare.ManyToMany.MedicineDetailsDTO;
 import com.kaif.healthcare.ManyToMany.MedicineListDTO;
 import com.kaif.healthcare.Service.MedicineService;
 import jakarta.validation.Valid;

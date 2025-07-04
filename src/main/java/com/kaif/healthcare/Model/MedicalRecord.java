@@ -23,10 +23,6 @@ public class MedicalRecord {
     @ToString.Exclude
     private Patient patient;
 
-    public MedicalRecord(String diagnose) {
-        this.diagnose = diagnose;
-    }
-
     @NotBlank(message= "Diagnose cannot be blank")
     private String diagnose;
 }

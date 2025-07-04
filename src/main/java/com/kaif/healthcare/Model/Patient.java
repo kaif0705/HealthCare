@@ -40,7 +40,7 @@ public class Patient extends Person {
     @Valid
     private Address patientAddress;
 
-    public Patient(String name, int age) {
+    public Patient(int age) {
 //        this.name = name;
 //        this.age = age;
         //Empty address instance to get it through patient instance while setting the address

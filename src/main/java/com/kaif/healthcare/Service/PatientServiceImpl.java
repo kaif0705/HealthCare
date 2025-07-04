@@ -4,7 +4,6 @@ import com.kaif.healthcare.Emuns.Gender;
 import com.kaif.healthcare.Exceptions.APIException;
 import com.kaif.healthcare.Exceptions.ResourceNotFoundException;
 import com.kaif.healthcare.ManyToMany.Medicine;
-import com.kaif.healthcare.ManyToMany.MedicineDetailsDTO;
 import com.kaif.healthcare.ManyToMany.Prescription;
 import com.kaif.healthcare.ManyToMany.PrescriptionDetailsDTO;
 import com.kaif.healthcare.Model.Doctor;
@@ -33,9 +32,6 @@ public class PatientServiceImpl implements PatientService {
 
     @Autowired
     private DoctorRepo doctorRepo;
-
-    @Autowired
-    private MedicalRecordRepo medicalRecordRepo;
 
     @Autowired
     private PrescriptionRepo prescriptionRepo;
